@@ -60,6 +60,10 @@ namespace CustomExecService.util.check
         }
         public bool Register(int processID)
         {
+            if (processID == -1)
+            {
+                return false;
+            }
             //todo: 记录要守护的线程ID
             if (!mProcessReStartMap.ContainsKey(processID))
             {
@@ -110,6 +114,7 @@ namespace CustomExecService.util.check
             {
                 KillProcess(pair.Key);
             }
+            mProcessReStartMap.Clear();
         }
         private bool RestartProcess(int processID)
         {
@@ -124,12 +129,19 @@ namespace CustomExecService.util.check
         }
         private void KillProcess(int processID)
         {
-            Process tgt = Process.GetProcessById(processID);
-            if (!tgt.HasExited)
+            try
             {
-                tgt.Kill();
+                Process tgt = Process.GetProcessById(processID);
+                if (!tgt.HasExited)
+                {
+                    tgt.Kill();
+                }
+                tgt.Dispose();
             }
-            tgt.Dispose();
+            catch (Exception ignore)
+            {
+
+            }
         }
     }
 }

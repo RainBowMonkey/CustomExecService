@@ -15,8 +15,14 @@ namespace CustomExecService.util.external
                 process.StartInfo.Arguments = param;
                 process.StartInfo.CreateNoWindow = false;
                 process.StartInfo.WorkingDirectory = Path.GetDirectoryName(binPath);
-                process.Start();
-                return process.Id;
+                if (process.Start())
+                {
+                    return process.Id;
+                }
+                else
+                {
+                    return -1;
+                }
             }
             catch (Exception e)
             {
